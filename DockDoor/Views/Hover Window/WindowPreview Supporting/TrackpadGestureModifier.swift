@@ -44,6 +44,9 @@ struct TrackpadEventMonitor: NSViewRepresentable {
     }
 
     func updateNSView(_ nsView: NSView, context: Context) {
+        if context.coordinator.isActive && !isActive {
+            context.coordinator.resetScrollingState()
+        }
         context.coordinator.isActive = isActive
     }
 
@@ -126,9 +129,7 @@ struct TrackpadEventMonitor: NSViewRepresentable {
                 finishScroll()
 
             case .cancelled:
-                cumulativeScrollX = 0
-                cumulativeScrollY = 0
-                isScrolling = false
+                resetScrollingState()
 
             default:
                 break
@@ -136,8 +137,10 @@ struct TrackpadEventMonitor: NSViewRepresentable {
 
             // Backup timer for end detection
             scrollEndTimer?.invalidate()
-            scrollEndTimer = Timer.scheduledTimer(withTimeInterval: 0.15, repeats: false) { [weak self] _ in
-                self?.finishScroll()
+            if isScrolling {
+                scrollEndTimer = Timer.scheduledTimer(withTimeInterval: 0.15, repeats: false) { [weak self] _ in
+                    self?.finishScroll()
+                }
             }
         }
 
@@ -167,6 +170,19 @@ struct TrackpadEventMonitor: NSViewRepresentable {
             scrollCooldownTimer?.invalidate()
             scrollCooldownTimer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: false) { [weak self] _ in
                 self?.onScrollingChanged?(false)
+            }
+        }
+
+        func resetScrollingState() {
+            scrollEndTimer?.invalidate()
+            scrollEndTimer = nil
+            scrollCooldownTimer?.invalidate()
+            scrollCooldownTimer = nil
+            cumulativeScrollX = 0
+            cumulativeScrollY = 0
+            if isScrolling {
+                isScrolling = false
+                onScrollingChanged?(false)
             }
         }
     }
