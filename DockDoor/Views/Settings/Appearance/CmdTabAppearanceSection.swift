@@ -14,6 +14,8 @@ struct CmdTabAppearanceSection: View {
     @Default(.cmdTabUseMonochromeTrafficLights) var cmdTabUseMonochromeTrafficLights
     @Default(.cmdTabDisableDockStyleTrafficLights) var cmdTabDisableDockStyleTrafficLights
     @Default(.cmdTabUseEmbeddedDockPreviewElements) var cmdTabUseEmbeddedDockPreviewElements
+    @Default(.cmdTabShowTrafficLights) var cmdTabShowTrafficLights
+    @Default(.cmdTabHidePreviewToolbar) var cmdTabHidePreviewToolbar
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -74,47 +76,54 @@ struct CmdTabAppearanceSection: View {
             Divider().padding(.vertical, 2)
             Text("Traffic Light Buttons").font(.headline).padding(.bottom, -2)
 
-            Picker("Visibility", selection: $cmdTabTrafficLightButtonsVisibility) {
-                ForEach(TrafficLightButtonsVisibility.allCases, id: \.self) { visibility in
-                    Text(visibility.localizedName)
-                        .tag(visibility)
-                }
+            Toggle(isOn: $cmdTabShowTrafficLights) {
+                Text("Show Traffic Light Buttons")
             }
-            .settingsSearchTarget("appearance.cmdTabTrafficLightVisibility")
+            .settingsSearchTarget("appearance.cmdTabShowTrafficLights")
 
-            if cmdTabTrafficLightButtonsVisibility != .never {
-                Text("Enabled Buttons")
-                VStack(alignment: .leading) {
-                    if !cmdTabEnabledTrafficLightButtons.isEmpty {
-                        TrafficLightButtons(
-                            displayMode: cmdTabTrafficLightButtonsVisibility,
-                            hoveringOverParentWindow: true,
-                            onWindowAction: { _ in },
-                            pillStyling: true,
-                            mockPreviewActive: false,
-                            enabledButtons: cmdTabEnabledTrafficLightButtons,
-                            useMonochrome: cmdTabUseMonochromeTrafficLights,
-                            backgroundAppearance: .resolve()
+            if cmdTabShowTrafficLights {
+                Picker("Visibility", selection: $cmdTabTrafficLightButtonsVisibility) {
+                    ForEach(TrafficLightButtonsVisibility.allCases, id: \.self) { visibility in
+                        Text(visibility.localizedName)
+                            .tag(visibility)
+                    }
+                }
+                .settingsSearchTarget("appearance.cmdTabTrafficLightVisibility")
+
+                if cmdTabTrafficLightButtonsVisibility != .never {
+                    Text("Enabled Buttons")
+                    VStack(alignment: .leading) {
+                        if !cmdTabEnabledTrafficLightButtons.isEmpty {
+                            TrafficLightButtons(
+                                displayMode: cmdTabTrafficLightButtonsVisibility,
+                                hoveringOverParentWindow: true,
+                                onWindowAction: { _ in },
+                                pillStyling: true,
+                                mockPreviewActive: false,
+                                enabledButtons: cmdTabEnabledTrafficLightButtons,
+                                useMonochrome: cmdTabUseMonochromeTrafficLights,
+                                backgroundAppearance: .resolve()
+                            )
+                        }
+                        EnabledButtonsCheckboxes(
+                            enabledButtons: $cmdTabEnabledTrafficLightButtons,
+                            visibilityBinding: $cmdTabTrafficLightButtonsVisibility,
+                            useMonochrome: cmdTabUseMonochromeTrafficLights
                         )
                     }
-                    EnabledButtonsCheckboxes(
-                        enabledButtons: $cmdTabEnabledTrafficLightButtons,
-                        visibilityBinding: $cmdTabTrafficLightButtonsVisibility,
-                        useMonochrome: cmdTabUseMonochromeTrafficLights
-                    )
-                }
-                Toggle("Use Monochrome Colors", isOn: $cmdTabUseMonochromeTrafficLights)
-                    .settingsSearchTarget("appearance.cmdTabMonochrome")
+                    Toggle("Use Monochrome Colors", isOn: $cmdTabUseMonochromeTrafficLights)
+                        .settingsSearchTarget("appearance.cmdTabMonochrome")
 
-                VStack(alignment: .leading) {
-                    Toggle(isOn: $cmdTabDisableDockStyleTrafficLights) {
-                        Text("Disable dock styling on traffic light buttons")
+                    VStack(alignment: .leading) {
+                        Toggle(isOn: $cmdTabDisableDockStyleTrafficLights) {
+                            Text("Disable dock styling on traffic light buttons")
+                        }
+                        .settingsSearchTarget("appearance.cmdTabDisableTrafficLightStyling")
+                        Text("Removes the pill-shaped background styling from traffic light buttons.")
+                            .font(.footnote)
+                            .foregroundColor(.gray)
+                            .padding(.leading, 20)
                     }
-                    .settingsSearchTarget("appearance.cmdTabDisableTrafficLightStyling")
-                    Text("Removes the pill-shaped background styling from traffic light buttons.")
-                        .font(.footnote)
-                        .foregroundColor(.gray)
-                        .padding(.leading, 20)
                 }
             }
 
@@ -128,6 +137,15 @@ struct CmdTabAppearanceSection: View {
                 }
                 .settingsSearchTarget("appearance.cmdTabEmbedControls")
                 Text("Places traffic light buttons and window titles directly inside the preview frames.")
+                    .font(.footnote)
+                    .foregroundColor(.gray)
+                    .padding(.leading, 20)
+
+                Toggle(isOn: $cmdTabHidePreviewToolbar) {
+                    Text("Hide Preview Toolbar")
+                }
+                .settingsSearchTarget("appearance.cmdTabHidePreviewToolbar")
+                Text("Completely hides the preview toolbar containing the title and traffic light buttons.")
                     .font(.footnote)
                     .foregroundColor(.gray)
                     .padding(.leading, 20)

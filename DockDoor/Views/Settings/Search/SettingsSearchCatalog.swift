@@ -829,6 +829,23 @@ enum SettingsSearchCatalog {
         ),
         // Dock Preview Appearance
         SettingsSearchItem(
+            id: "appearance.dockShowTrafficLights",
+            title: String(localized: "Show Traffic Light Buttons"),
+            keywords: ["traffic", "light", "buttons", "dock", "show"],
+            tab: "Appearance",
+            section: String(localized: "Dock Preview Appearance"),
+            icon: "minus.circle"
+        ),
+        SettingsSearchItem(
+            id: "appearance.dockHidePreviewToolbar",
+            title: String(localized: "Hide Preview Toolbar"),
+            description: String(localized: "Completely hides the preview toolbar containing the title and traffic light buttons."),
+            keywords: ["hide", "preview", "toolbar", "dock"],
+            tab: "Appearance",
+            section: String(localized: "Dock Preview Appearance"),
+            icon: "rectangle.dashed"
+        ),
+        SettingsSearchItem(
             id: "appearance.dockShowAppHeader",
             title: String(localized: "Show App Header"),
             keywords: ["app", "header", "name", "dock"],
@@ -941,6 +958,23 @@ enum SettingsSearchCatalog {
         ),
         // Window Switcher Appearance
         SettingsSearchItem(
+            id: "appearance.switcherShowTrafficLights",
+            title: String(localized: "Show Traffic Light Buttons"),
+            keywords: ["traffic", "light", "buttons", "switcher", "show"],
+            tab: "Appearance",
+            section: String(localized: "Window Switcher Appearance"),
+            icon: "minus.circle"
+        ),
+        SettingsSearchItem(
+            id: "appearance.switcherHidePreviewToolbar",
+            title: String(localized: "Hide Preview Toolbar"),
+            description: String(localized: "Completely hides the preview toolbar containing the title and traffic light buttons."),
+            keywords: ["hide", "preview", "toolbar", "switcher"],
+            tab: "Appearance",
+            section: String(localized: "Window Switcher Appearance"),
+            icon: "rectangle.dashed"
+        ),
+        SettingsSearchItem(
             id: "appearance.switcherShowAppHeader",
             title: String(localized: "Show App Header"),
             description: String(localized: "Show app header in the window switcher."),
@@ -1046,6 +1080,23 @@ enum SettingsSearchCatalog {
             icon: "arrow.up.left.and.arrow.down.right"
         ),
         // Cmd+Tab Appearance
+        SettingsSearchItem(
+            id: "appearance.cmdTabShowTrafficLights",
+            title: String(localized: "Show Traffic Light Buttons"),
+            keywords: ["traffic", "light", "buttons", "cmd tab", "show"],
+            tab: "Appearance",
+            section: String(localized: "Cmd+Tab Appearance"),
+            icon: "minus.circle"
+        ),
+        SettingsSearchItem(
+            id: "appearance.cmdTabHidePreviewToolbar",
+            title: String(localized: "Hide Preview Toolbar"),
+            description: String(localized: "Completely hides the preview toolbar containing the title and traffic light buttons."),
+            keywords: ["hide", "preview", "toolbar", "cmd tab"],
+            tab: "Appearance",
+            section: String(localized: "Cmd+Tab Appearance"),
+            icon: "rectangle.dashed"
+        ),
         SettingsSearchItem(
             id: "appearance.cmdTabShowAppHeader",
             title: String(localized: "Show App Header"),

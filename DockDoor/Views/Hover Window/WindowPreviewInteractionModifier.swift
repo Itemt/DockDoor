@@ -140,6 +140,8 @@ struct WindowPreviewInteractionModifier: ViewModifier {
     // MARK: - Tap Handling
 
     private func handleWindowTap() {
+        SharedPreviewWindowCoordinator.activeInstance?.hideWindow()
+
         if NSEvent.modifierFlags.contains(.shift) {
             WindowUtil.activateAndOpenNewWindow(app: windowInfo.app)
             onTap?()

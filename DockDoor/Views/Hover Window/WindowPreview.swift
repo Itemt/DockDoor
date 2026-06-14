@@ -36,6 +36,8 @@ struct PreviewAppearanceSettings: Equatable {
     let compactModeHideTrafficLights: Bool
     let showWindowlessAppQuitButton: Bool
     let titleOverflowStyle: TitleOverflowStyle
+    let showTrafficLights: Bool
+    let hidePreviewToolbar: Bool
 
     var isDiagonalPosition: Bool {
         switch controlPosition {
@@ -66,6 +68,8 @@ struct PreviewAppearanceSettings: Equatable {
         .windowTitleFontSize, .switcherAppIconSize, .trafficLightButtonScale,
         .previewWidth, .compactModeTitleFormat, .compactModeItemSize, .compactModeHideTrafficLights,
         .showWindowlessAppQuitButton, .titleOverflowStyle,
+        .showTrafficLights, .switcherShowTrafficLights, .cmdTabShowTrafficLights,
+        .hidePreviewToolbar, .switcherHidePreviewToolbar, .cmdTabHidePreviewToolbar,
     ]
 
     static func resolve(windowSwitcherActive: Bool, dockPosition: DockPosition) -> PreviewAppearanceSettings {
@@ -113,7 +117,9 @@ struct PreviewAppearanceSettings: Equatable {
             compactModeItemSize: Defaults[.compactModeItemSize],
             compactModeHideTrafficLights: Defaults[.compactModeHideTrafficLights],
             showWindowlessAppQuitButton: Defaults[.showWindowlessAppQuitButton],
-            titleOverflowStyle: Defaults[.titleOverflowStyle]
+            titleOverflowStyle: Defaults[.titleOverflowStyle],
+            showTrafficLights: pick(.showTrafficLights, switcher: .switcherShowTrafficLights, cmdTab: .cmdTabShowTrafficLights),
+            hidePreviewToolbar: pick(.hidePreviewToolbar, switcher: .switcherHidePreviewToolbar, cmdTab: .cmdTabHidePreviewToolbar)
         )
     }
 }
@@ -181,6 +187,7 @@ struct WindowPreview: View, Equatable {
     }
 
     private var hasWindowSwitcherControlContent: Bool {
+        guard appearance.showTrafficLights else { return false }
         let canShowWindowControls = appearance.showMinimizedHiddenLabels ? (!windowInfo.isMinimized && !windowInfo.isHidden) : true
 
         if windowInfo.closeButton != nil,
@@ -312,6 +319,7 @@ struct WindowPreview: View, Equatable {
             (appearance.windowTitleVisibility == .alwaysVisible || selected)
 
         let hasTrafficLights = windowInfo.closeButton != nil &&
+            appearance.showTrafficLights &&
             appearance.trafficLightVisibility != .never &&
             (appearance.showMinimizedHiddenLabels ? (!windowInfo.isMinimized && !windowInfo.isHidden) : true)
 
@@ -589,30 +597,32 @@ struct WindowPreview: View, Equatable {
         }
 
         let controlsContent = Group {
-            if windowInfo.closeButton != nil && (appearance.showMinimizedHiddenLabels ? (!windowInfo.isMinimized && !windowInfo.isHidden) : true) {
-                TrafficLightButtons(
-                    displayMode: appearance.trafficLightVisibility,
-                    hoveringOverParentWindow: selected || isHoveringOverWindowSwitcherPreview,
-                    onWindowAction: handleWindowAction,
-                    pillStyling: !appearance.disableDockStyleTrafficLights,
-                    mockPreviewActive: mockPreviewActive,
-                    enabledButtons: appearance.enabledTrafficLightButtons,
-                    useMonochrome: appearance.useMonochromeTrafficLights,
-                    backgroundAppearance: backgroundAppearance
-                )
-            } else if windowInfo.isMinimized || windowInfo.isHidden,
-                      appearance.showMinimizedHiddenLabels,
-                      appearance.trafficLightVisibility != .never
-            {
-                Text(windowInfo.isMinimized ? "Minimized" : "Hidden")
-                    .font(appearance.windowTitleFontSize.font)
-                    .italic()
-                    .foregroundStyle(.secondary)
-                    .padding(4)
-                    .if(!appearance.disableDockStyleTitles) { view in
-                        view.materialPill(backgroundAppearance: backgroundAppearance)
-                            .frame(height: 34)
-                    }
+            if appearance.showTrafficLights {
+                if windowInfo.closeButton != nil && (appearance.showMinimizedHiddenLabels ? (!windowInfo.isMinimized && !windowInfo.isHidden) : true) {
+                    TrafficLightButtons(
+                        displayMode: appearance.trafficLightVisibility,
+                        hoveringOverParentWindow: selected || isHoveringOverWindowSwitcherPreview,
+                        onWindowAction: handleWindowAction,
+                        pillStyling: !appearance.disableDockStyleTrafficLights,
+                        mockPreviewActive: mockPreviewActive,
+                        enabledButtons: appearance.enabledTrafficLightButtons,
+                        useMonochrome: appearance.useMonochromeTrafficLights,
+                        backgroundAppearance: backgroundAppearance
+                    )
+                } else if windowInfo.isMinimized || windowInfo.isHidden,
+                          appearance.showMinimizedHiddenLabels,
+                          appearance.trafficLightVisibility != .never
+                {
+                    Text(windowInfo.isMinimized ? "Minimized" : "Hidden")
+                        .font(appearance.windowTitleFontSize.font)
+                        .italic()
+                        .foregroundStyle(.secondary)
+                        .padding(4)
+                        .if(!appearance.disableDockStyleTitles) { view in
+                            view.materialPill(backgroundAppearance: backgroundAppearance)
+                                .frame(height: 34)
+                        }
+                }
             }
         }
 
@@ -660,6 +670,7 @@ struct WindowPreview: View, Equatable {
             (appearance.windowTitleVisibility == .alwaysVisible || selected)
 
         let hasTrafficLights = windowInfo.closeButton != nil &&
+            appearance.showTrafficLights &&
             appearance.trafficLightVisibility != .never &&
             (appearance.showMinimizedHiddenLabels ? (!windowInfo.isMinimized && !windowInfo.isHidden) : true)
 
@@ -741,6 +752,7 @@ struct WindowPreview: View, Equatable {
         ZStack(alignment: .topLeading) {
             VStack(alignment: .leading, spacing: 0) {
                 if !appearance.useEmbeddedElements,
+                   !appearance.hidePreviewToolbar,
                    appearance.controlPosition.showsOnTop
                 {
                     let config = appearance.controlPosition.topConfiguration
@@ -768,6 +780,7 @@ struct WindowPreview: View, Equatable {
                 }
 
                 if !appearance.useEmbeddedElements,
+                   !appearance.hidePreviewToolbar,
                    appearance.controlPosition.showsOnBottom
                 {
                     let config = appearance.controlPosition.bottomConfiguration
@@ -826,7 +839,7 @@ struct WindowPreview: View, Equatable {
                     .opacity(highlightOpacity)
             }
 
-            if appearance.useEmbeddedElements {
+            if appearance.useEmbeddedElements, !appearance.hidePreviewToolbar {
                 embeddedControlsOverlay(finalIsSelected)
             }
         }

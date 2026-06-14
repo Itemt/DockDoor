@@ -15,6 +15,8 @@ struct DockPreviewAppearanceSection: View {
     @Default(.previewMaxColumns) var previewMaxColumns
     @Default(.previewMaxRows) var previewMaxRows
     @Default(.windowTitleFontSize) var windowTitleFontSize
+    @Default(.showTrafficLights) var showTrafficLights
+    @Default(.hidePreviewToolbar) var hidePreviewToolbar
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -87,7 +89,15 @@ struct DockPreviewAppearanceSection: View {
 
             Divider().padding(.vertical, 2)
             Text("Traffic Light Buttons in Previews").font(.headline).padding(.bottom, -2)
-            AppearanceSettingsView.TrafficLightButtonsSettingsView()
+
+            Toggle(isOn: $showTrafficLights) {
+                Text("Show Traffic Light Buttons")
+            }
+            .settingsSearchTarget("appearance.dockShowTrafficLights")
+
+            if showTrafficLights {
+                AppearanceSettingsView.TrafficLightButtonsSettingsView()
+            }
 
             VStack(alignment: .leading) {
                 Toggle(isOn: $disableDockStyleTrafficLights) {
@@ -123,6 +133,15 @@ struct DockPreviewAppearanceSection: View {
                 }
                 .settingsSearchTarget("appearance.dockEmbedControls")
                 Text("Places traffic light buttons and window titles directly inside the dock preview frames for a more compact and minimal appearance.")
+                    .font(.footnote)
+                    .foregroundColor(.gray)
+                    .padding(.leading, 20)
+
+                Toggle(isOn: $hidePreviewToolbar) {
+                    Text("Hide Preview Toolbar")
+                }
+                .settingsSearchTarget("appearance.dockHidePreviewToolbar")
+                Text("Completely hides the preview toolbar containing the title and traffic light buttons.")
                     .font(.footnote)
                     .foregroundColor(.gray)
                     .padding(.leading, 20)

@@ -490,7 +490,7 @@ final class SharedPreviewWindowCoordinator: NSPanel {
         case .bottom:
             yPosition += bufferFromDock
         case .cmdTab:
-            yPosition += 5
+            yPosition += 0
         default:
             break
         }
@@ -538,7 +538,7 @@ final class SharedPreviewWindowCoordinator: NSPanel {
         case .bottom, .cli:
             yPosition += bufferFromDock
         case .cmdTab:
-            yPosition += 5
+            yPosition += 0
         default:
             break
         }

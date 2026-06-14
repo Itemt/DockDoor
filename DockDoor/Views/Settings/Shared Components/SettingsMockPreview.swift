@@ -40,6 +40,8 @@ struct SettingsMockPreview: View {
     @Default(.useEmbeddedDockPreviewElements) private var dockUseEmbedded
     @Default(.dockLivePreviewQuality) private var dockLivePreviewQuality
     @Default(.dockLivePreviewFrameRate) private var dockLivePreviewFrameRate
+    @Default(.showTrafficLights) private var dockShowTrafficLights
+    @Default(.hidePreviewToolbar) private var dockHidePreviewToolbar
 
     // MARK: - Window Switcher appearance settings
 
@@ -55,6 +57,8 @@ struct SettingsMockPreview: View {
     @Default(.switcherDisableDockStyleTrafficLights) private var switcherDisableStyleTrafficLights
     @Default(.windowSwitcherLivePreviewQuality) private var switcherLivePreviewQuality
     @Default(.windowSwitcherLivePreviewFrameRate) private var switcherLivePreviewFrameRate
+    @Default(.switcherShowTrafficLights) private var switcherShowTrafficLights
+    @Default(.switcherHidePreviewToolbar) private var switcherHidePreviewToolbar
 
     // MARK: - Cmd+Tab appearance settings
 
@@ -67,6 +71,8 @@ struct SettingsMockPreview: View {
     @Default(.cmdTabDisableDockStyleTrafficLights) private var cmdTabDisableStyleTrafficLights
     @Default(.cmdTabDisableDockStyleTitles) private var cmdTabDisableStyleTitles
     @Default(.cmdTabUseEmbeddedDockPreviewElements) private var cmdTabUseEmbedded
+    @Default(.cmdTabShowTrafficLights) private var cmdTabShowTrafficLights
+    @Default(.cmdTabHidePreviewToolbar) private var cmdTabHidePreviewToolbar
 
     // MARK: - Shared appearance settings
 
@@ -192,6 +198,22 @@ struct SettingsMockPreview: View {
         let quality = isWindowSwitcher ? switcherLivePreviewQuality : dockLivePreviewQuality
         let frameRate = isWindowSwitcher ? switcherLivePreviewFrameRate : dockLivePreviewFrameRate
 
+        let showTrafficLights: Bool = if isWindowSwitcher {
+            switcherShowTrafficLights
+        } else if isCmdTab {
+            cmdTabShowTrafficLights
+        } else {
+            dockShowTrafficLights
+        }
+
+        let hidePreviewToolbar: Bool = if isWindowSwitcher {
+            switcherHidePreviewToolbar
+        } else if isCmdTab {
+            cmdTabHidePreviewToolbar
+        } else {
+            dockHidePreviewToolbar
+        }
+
         return PreviewAppearanceSettings(
             trafficLightVisibility: trafficLightVisibility,
             enabledTrafficLightButtons: enabledButtons,
@@ -225,7 +247,9 @@ struct SettingsMockPreview: View {
             compactModeItemSize: compactModeItemSize,
             compactModeHideTrafficLights: compactModeHideTrafficLights,
             showWindowlessAppQuitButton: showWindowlessAppQuitButton,
-            titleOverflowStyle: titleOverflowStyle
+            titleOverflowStyle: titleOverflowStyle,
+            showTrafficLights: showTrafficLights,
+            hidePreviewToolbar: hidePreviewToolbar
         )
     }
 

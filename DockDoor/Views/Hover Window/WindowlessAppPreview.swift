@@ -129,7 +129,7 @@ struct WindowlessAppPreview: View, Equatable {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            if appearance.controlPosition.showsOnTop {
+            if !appearance.hidePreviewToolbar, appearance.controlPosition.showsOnTop {
                 let config = appearance.controlPosition.topConfiguration
                 if (appearance.showAppHeader && config.showTitle) || (shouldShowQuitButton && config.showControls) {
                     toolbarContent(
@@ -152,7 +152,7 @@ struct WindowlessAppPreview: View, Equatable {
                 )
                 .opacity(isSelected ? 1.0 : appearance.unselectedContentOpacity)
 
-            if appearance.controlPosition.showsOnBottom {
+            if !appearance.hidePreviewToolbar, appearance.controlPosition.showsOnBottom {
                 let config = appearance.controlPosition.bottomConfiguration
                 if (appearance.showAppHeader && config.showTitle) || (shouldShowQuitButton && config.showControls) {
                     toolbarContent(
@@ -204,6 +204,7 @@ struct WindowlessAppPreview: View, Equatable {
             }
         }
         .onTapGesture {
+            SharedPreviewWindowCoordinator.activeInstance?.hideWindow()
             if NSEvent.modifierFlags.contains(.shift) {
                 WindowUtil.activateAndOpenNewWindow(app: windowInfo.app)
                 onTap?()

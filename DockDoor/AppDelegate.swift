@@ -28,7 +28,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let state = UpdaterState()
         updaterState = state
 
-        let anUpdaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: state, userDriverDelegate: nil)
+        #if DEBUG
+            let anUpdaterController = SPUStandardUpdaterController(startingUpdater: false, updaterDelegate: state, userDriverDelegate: nil)
+        #else
+            let anUpdaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: state, userDriverDelegate: nil)
+        #endif
         updaterController = anUpdaterController
 
         state.updater = anUpdaterController.updater
@@ -84,10 +88,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 dockLocker = DockLocker()
             }
 
-            if updater.automaticallyChecksForUpdates {
-                print("AppDelegate: Automatic updates enabled, checking in background.")
-                updater.checkForUpdatesInBackground()
-            }
+            #if !DEBUG
+                if updater.automaticallyChecksForUpdates {
+                    print("AppDelegate: Automatic updates enabled, checking in background.")
+                    updater.checkForUpdatesInBackground()
+                }
+            #endif
         }
 
         Task(priority: .high) { [weak self] in

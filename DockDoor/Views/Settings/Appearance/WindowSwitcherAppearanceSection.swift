@@ -15,6 +15,8 @@ struct WindowSwitcherAppearanceSection: View {
     @Default(.switcherMaxRows) var switcherMaxRows
     @Default(.switcherIgnoreScreenLimit) var switcherIgnoreScreenLimit
     @Default(.windowSwitcherScrollDirection) var windowSwitcherScrollDirection
+    @Default(.switcherShowTrafficLights) var switcherShowTrafficLights
+    @Default(.switcherHidePreviewToolbar) var switcherHidePreviewToolbar
 
     private var automaticAppIconSizeBinding: Binding<Bool> {
         Binding(
@@ -79,46 +81,53 @@ struct WindowSwitcherAppearanceSection: View {
             Divider().padding(.vertical, 2)
             Text("Traffic Light Buttons").font(.headline).padding(.bottom, -2)
 
-            Picker("Visibility", selection: $switcherTrafficLightButtonsVisibility) {
-                ForEach(TrafficLightButtonsVisibility.allCases, id: \.self) { visibility in
-                    Text(visibility.localizedName)
-                        .tag(visibility)
-                }
+            Toggle(isOn: $switcherShowTrafficLights) {
+                Text("Show Traffic Light Buttons")
             }
-            .settingsSearchTarget("appearance.switcherTrafficLightVisibility")
+            .settingsSearchTarget("appearance.switcherShowTrafficLights")
 
-            if switcherTrafficLightButtonsVisibility != .never {
-                Text("Enabled Buttons")
-                VStack(alignment: .leading) {
-                    if !switcherEnabledTrafficLightButtons.isEmpty {
-                        TrafficLightButtons(
-                            displayMode: switcherTrafficLightButtonsVisibility,
-                            hoveringOverParentWindow: true,
-                            onWindowAction: { _ in },
-                            pillStyling: !switcherDisableDockStyleTrafficLights,
-                            mockPreviewActive: false,
-                            enabledButtons: switcherEnabledTrafficLightButtons,
-                            useMonochrome: switcherUseMonochromeTrafficLights,
-                            backgroundAppearance: .resolve()
+            if switcherShowTrafficLights {
+                Picker("Visibility", selection: $switcherTrafficLightButtonsVisibility) {
+                    ForEach(TrafficLightButtonsVisibility.allCases, id: \.self) { visibility in
+                        Text(visibility.localizedName)
+                            .tag(visibility)
+                    }
+                }
+                .settingsSearchTarget("appearance.switcherTrafficLightVisibility")
+
+                if switcherTrafficLightButtonsVisibility != .never {
+                    Text("Enabled Buttons")
+                    VStack(alignment: .leading) {
+                        if !switcherEnabledTrafficLightButtons.isEmpty {
+                            TrafficLightButtons(
+                                displayMode: switcherTrafficLightButtonsVisibility,
+                                hoveringOverParentWindow: true,
+                                onWindowAction: { _ in },
+                                pillStyling: !switcherDisableDockStyleTrafficLights,
+                                mockPreviewActive: false,
+                                enabledButtons: switcherEnabledTrafficLightButtons,
+                                useMonochrome: switcherUseMonochromeTrafficLights,
+                                backgroundAppearance: .resolve()
+                            )
+                        }
+                        EnabledButtonsCheckboxes(
+                            enabledButtons: $switcherEnabledTrafficLightButtons,
+                            visibilityBinding: $switcherTrafficLightButtonsVisibility,
+                            useMonochrome: switcherUseMonochromeTrafficLights
                         )
                     }
-                    EnabledButtonsCheckboxes(
-                        enabledButtons: $switcherEnabledTrafficLightButtons,
-                        visibilityBinding: $switcherTrafficLightButtonsVisibility,
-                        useMonochrome: switcherUseMonochromeTrafficLights
-                    )
-                }
-                Toggle("Use Monochrome Colors", isOn: $switcherUseMonochromeTrafficLights)
-                    .settingsSearchTarget("appearance.switcherMonochrome")
+                    Toggle("Use Monochrome Colors", isOn: $switcherUseMonochromeTrafficLights)
+                        .settingsSearchTarget("appearance.switcherMonochrome")
 
-                VStack(alignment: .leading) {
-                    Toggle(isOn: $switcherDisableDockStyleTrafficLights) {
-                        Text("Disable dock styling on traffic light buttons")
+                    VStack(alignment: .leading) {
+                        Toggle(isOn: $switcherDisableDockStyleTrafficLights) {
+                            Text("Disable dock styling on traffic light buttons")
+                        }
+                        .settingsSearchTarget("appearance.switcherDisableTrafficLightStyling")
+                        Text("Removes the pill-shaped background styling from traffic light buttons.")
+                            .font(.footnote)
+                            .foregroundColor(.gray)
                     }
-                    .settingsSearchTarget("appearance.switcherDisableTrafficLightStyling")
-                    Text("Removes the pill-shaped background styling from traffic light buttons.")
-                        .font(.footnote)
-                        .foregroundColor(.gray)
                 }
             }
 
@@ -150,6 +159,15 @@ struct WindowSwitcherAppearanceSection: View {
                 }
                 .settingsSearchTarget("appearance.switcherEmbedControls")
                 Text("Places traffic light buttons and window titles directly inside the window switcher preview frames.")
+                    .font(.footnote)
+                    .foregroundColor(.gray)
+                    .padding(.leading, 20)
+
+                Toggle(isOn: $switcherHidePreviewToolbar) {
+                    Text("Hide Preview Toolbar")
+                }
+                .settingsSearchTarget("appearance.switcherHidePreviewToolbar")
+                Text("Completely hides the preview toolbar containing the title and traffic light buttons.")
                     .font(.footnote)
                     .foregroundColor(.gray)
                     .padding(.leading, 20)

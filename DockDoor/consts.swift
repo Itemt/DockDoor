@@ -28,7 +28,7 @@ extension Defaults.Keys {
     static let previewWidth = Key<CGFloat>("previewWidth", default: 300)
     static let previewHeight = Key<CGFloat>("previewHeight", default: 187.5)
     static let lockAspectRatio = Key<Bool>("lockAspectRatio", default: true)
-    static let bufferFromDock = Key<CGFloat>("bufferFromDock", default: CoreDockIsMagnificationEnabled() ? -25 : DockUtils.getDockPosition() == .right ? -18 : -20)
+    static let bufferFromDock = Key<CGFloat>("bufferFromDock", default: CoreDockIsMagnificationEnabled() ? -30 : DockUtils.getDockPosition() == .right ? -23 : -25)
     static let globalPaddingMultiplier = Key<CGFloat>("globalPaddingMultiplier", default: 0.7)
     static let hoverWindowOpenDelay = Key<CGFloat>("openDelay", default: 0.2)
     static let useDelayOnlyForInitialOpen = Key<Bool>("useDelayOnlyForInitialOpen", default: false)
@@ -205,6 +205,8 @@ extension Defaults.Keys {
     static let useMonochromeTrafficLights = Key<Bool>("useMonochromeTrafficLights", default: false)
     static let trafficLightButtonScale = Key<CGFloat>("trafficLightButtonScale", default: 1.0)
     static let showMinimizedHiddenLabels = Key<Bool>("showMinimizedHiddenLabels", default: true)
+    static let showTrafficLights = Key<Bool>("showTrafficLights", default: true)
+    static let hidePreviewToolbar = Key<Bool>("hidePreviewToolbar", default: false)
 
     // MARK: - Window Switcher Appearance Settings
 
@@ -217,6 +219,8 @@ extension Defaults.Keys {
     static let switcherUseMonochromeTrafficLights = Key<Bool>("switcherUseMonochromeTrafficLights", default: false)
     static let switcherUseEmbeddedDockPreviewElements = Key<Bool>("switcherUseEmbeddedDockPreviewElements", default: false)
     static let switcherDisableDockStyleTrafficLights = Key<Bool>("switcherDisableDockStyleTrafficLights", default: false)
+    static let switcherShowTrafficLights = Key<Bool>("switcherShowTrafficLights", default: true)
+    static let switcherHidePreviewToolbar = Key<Bool>("switcherHidePreviewToolbar", default: false)
 
     // MARK: - Cmd+Tab Appearance Settings
 
@@ -234,6 +238,8 @@ extension Defaults.Keys {
     static let cmdTabUseEmbeddedDockPreviewElements = Key<Bool>("cmdTabUseEmbeddedDockPreviewElements", default: false)
     static let cmdTabDisableDockStyleTrafficLights = Key<Bool>("cmdTabDisableDockStyleTrafficLights", default: false)
     static let cmdTabDisableDockStyleTitles = Key<Bool>("cmdTabDisableDockStyleTitles", default: false)
+    static let cmdTabShowTrafficLights = Key<Bool>("cmdTabShowTrafficLights", default: true)
+    static let cmdTabHidePreviewToolbar = Key<Bool>("cmdTabHidePreviewToolbar", default: false)
 
     static let previewMaxColumns = Key<Int>("previewMaxColumns", default: 2) // For left/right dock
     static let previewMaxRows = Key<Int>("previewMaxRows", default: 1) // For bottom dock only
