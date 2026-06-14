@@ -44,7 +44,7 @@ struct TrackpadEventMonitor: NSViewRepresentable {
     }
 
     func updateNSView(_ nsView: NSView, context: Context) {
-        if context.coordinator.isActive && !isActive {
+        if context.coordinator.isActive, !isActive {
             context.coordinator.resetScrollingState()
         }
         context.coordinator.isActive = isActive
