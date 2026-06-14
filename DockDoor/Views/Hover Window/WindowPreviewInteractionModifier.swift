@@ -156,9 +156,13 @@ struct WindowPreviewInteractionModifier: ViewModifier {
             }
             onTap?()
         } else if windowInfo.isMinimized {
-            handleWindowAction(.minimize)
+            var mutableWindow = windowInfo
+            mutableWindow.toggleMinimize()
+            onTap?()
         } else if windowInfo.isHidden {
-            handleWindowAction(.hide)
+            var mutableWindow = windowInfo
+            mutableWindow.toggleHidden()
+            onTap?()
         } else {
             windowInfo.bringToFront()
             onTap?()
